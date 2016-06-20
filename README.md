@@ -1,2 +1,2 @@
 # R tutorial
-Contains worksheet and Howells' dataset for R tutorial (July 24th, 2016)
+Contains worksheet, intro slides, and Howells' dataset for R tutorial (July 24th, 2016)
