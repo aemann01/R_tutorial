@@ -1,0 +1,169 @@
+#2018 short R tutorial for R programming group, UBC
+#modified from Wickham R for Data Science Ch. 5 
+
+#########################
+#Wickham Chapter 5 Notes
+#########################
+#dataset: git clone https://github.com/aemann01/R_tutorial
+#first need to load in the tidyverse library and your dataset
+library(tidyverse)
+skull <- read.csv("Howell_dat.csv", header=T)
+
+#take a look at your data, what kinds of variables, how many columns/rows?
+summary(skull)
+
+############
+#FILTER
+############
+#subset your dataframe by row based on some value
+#so for example, only look at female individuals from Egypt
+filter(skull, Population == "EGYPT", Sex == "F")
+
+#add another condition to this, only those with GOL that falls between the 1st and 3rd quartile (based on summary results)
+filter(skull, Population == "EGYPT", Sex == "F", GOL > 173 & GOL < 185)
+
+#if you want to save your subset as a new data frame, assign it to a new object name
+subsetSkull <- filter(skull, Population == "EGYPT", Sex == "F", GOL > 173 & GOL < 185)
+
+#can also do both -- assign to new object and print to screen, just put full command in parentheses
+(subsetSkull <- filter(skull, skull$Population == "EGYPT", skull$Sex == "F", GOL > 173 & GOL < 185))
+
+#the filter function understands all base R comparison operators
+> #greater than
+< #less than
+>= #greater than or equal to
+<= #less than or equal to
+!= #"bang" equals -- not equal to
+== #equal to
+
+#NOTE: it's easy to forget that == is "equal to" while = is another way to assign a variable
+#the tidyverse library will explicitly tell you if this mistake is made, try below command
+subsetSkull <- filter(skull, Population = "NORSE")
+
+#boolean (logical) operators
+& #and
+| #or
+! #not
+
+#to make the dataframe more manageable, subset it using base R (this command only keeps columns 1 through 20 but retains all rows)
+skullsub <- skull[,1:20]
+
+#try some logical operations on the data, for example we want to pull any rows that have the climate groups polar OR snow
+filter(skullsub, climate_group == "polar" | climate_group == "snow")
+
+#you can also do the same thing by using the shorthand %in%
+filter(skullsub, climate_group %in% c("polar", "snow")
+
+#another example
+filter(skull, skull$Population %in% c("GUAM", "EASTER_I", "N_JAPAN"))
+
+#or for a numerical variable, subset a range of numbers (in this case population numbers 1 through 5)
+filter(skullsub, PopNum %in% c(1:5)
+
+##dealing with missing values (NA "Not Available")
+#author calls them "contagious" meaning that the presence of NAs in comparative operations will automatically make the result of the comparison an NA as well
+#try the following
+NA > 5
+10 == NA
+NA + 10
+NA == NA
+"NA" == "NA"
+
+#why is the last result different?
+
+#the filter function by default will ignore any called row where the comparison made is NA, if you want to include these rows you must explicitly tell filter to do so (example pulls any row that has the climate group "equatorial" OR is an NA
+filter(skullsub, climate_group == "equatorial" | is.na(climate_group))
+
+############
+#ARRANGE
+############
+#change the order of rows in your dataset by some column value
+#alphabetical order based on the population column
+arrange(skullsub, Population)
+
+#descending order
+arrange(skullsub, desc(Population))
+
+#NOTE: missing values are always sorted to the end of your dataframe
+#check this
+tail(arrange(skullsub, climate_group))
+tail(arrange(skullsub, desc(climate_group))
+
+############
+#SELECT
+############
+#subset your dataframe on the columns that you want to keep (in this example, only the location, Population, and GOL columns)
+select(skullsub, location, Population, GOL)
+
+#NOTE: the dataframe$column syntax doesn't seem to work with this package
+
+#can also pick a range of columns
+select(skullsub, GOL:BPL)
+
+#can also exclude specific columns
+select(skullsub, -(GOL:BPL))
+
+##fuzzy matching
+#pick columns that start with a character or string (in this case any column that starts with "c")
+select(skullsub, starts_with("c"))
+
+#ends with a character or string
+select(skullsub, ends_with("L"))
+
+#character or string in the middle of the column name
+select(skull, contains("O"))
+
+#anything surprising about the results here?
+
+#to see full list of fuzzy matching/helper function 
+?select
+
+############
+#MUTATE
+############
+#add new variables to your data with mutate 
+#for example, if you wanted the difference between nasion occipital length (NOL) and basion nasion length (BNL) to get basion occipital length (BOL)
+mutate(skullsub, BOL = NOL - BNL)
+
+#you can even modify this newly created column in the same command, so we can easily add BOL converted to cm from mm
+mutate(skullsub, BOL = NOL - BNL, BOL_cm = BOL / 10)
+
+#if you want to only keep these newly created columns as a fresh dataframe
+transmutate(skullsub, BOL = NOL - BNL, BOL_cm = BOL / 10)
+
+#there are all sorts of helpful operations that you can perform with this function eg: any arithmetic operator, rolling aggregates, cumulative means/sums/etc, log transformation, etc....
+
+############
+#GROUP BY
+############
+#group your data and summarise across groups
+#so for example, if you wanted to group your data by Sex and Population
+grouped <- group_by(skullsub, Sex, Population)
+
+#call your new grouped dataframe to inspect
+grouped
+
+#now can summarise across your chosen groups -- so for example, to get the mean GOL for all individuals by Sex and Population
+summarise(grouped, meanGOL = mean(GOL))
+
+#save as a new dataframe object
+groupedMean <- summarise(grouped, meanGOL = mean(GOL))
+
+#can now easily visualise our grouped data with gig-lot
+ggplot(groupedMean, aes(x=meanGOL, y=Population, col=Sex)) + geom_point()
+
+#try another time now grouped by Sex and climate group
+grouped_clim <- group_by(skullsub, Sex, climate_group)
+group_clim_mean <- summarise(grouped_clim, meanGOL = mean(GOL))
+ggplot(group_clim_mean, aes(x=meanGOL, y=climate_group, col=Sex)) + geom_point()
+
+#stringing together multiple commands using the pipe operator (%>%) -- in this example, get all locations and populations with a mean GOL of over 180mm 
+#NOTE: these can all be on the same line
+skull %>%
+group_by(climate_group, Sex) %>%
+summarise(meanGOL = mean(GOL)) %>%
+filter(meanGOL >= 180)
+
+
+
+
