@@ -1,0 +1,4 @@
+sample  name  length
+samp1 moxie 24
+samp2 laika 22
+samp3 jackson 30
