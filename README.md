@@ -58,3 +58,36 @@ For fun, type in ```demo(graphics)``` to see some of the graphic capabilities of
 * *String* = a character or characters (e.g., words, sentences, letters)
 * *Int* = short for "integer", whole numbers
 * *Float* = floating point numbers (e.g., 4.0 is a float, 4 is an int)
+
+### Types of operators (not a complete list)
+* ```<-``` or ```->``` or ```=``` = assigns something to an object
+* ```~``` = assigns relationships between objects, often in formulas
+* ```:``` = assigns some sequence (usually of numbers)
+* ```$``` = indicates that the object on the right of the operator is a component of object on left of operator (e.g., column from a dataframe)
+* ```""``` or ```''``` = object is a string or character
+* ```#``` = comment (R will ignore any text that follows a comment)
+
+Math operators: ```+ - * / ^```
+Comparison operators ```< > >= <= == !=```
+
+### Five commandments for naming objects in R:
+1. Objects MUST begin with a letter - this is good practice in any case, never give sample IDs or other variables in your datasets numerical names - many programs, including R will treat them in unexpected ways
+2. Object names cannot contain operators or other special characters that R uses in its syntax, so no: ``` , - * / # % & [ ] { } spaces```
+3. Be specific but brief. You should know what the object is from its name - 20 minutes from now you might not know what object ```x``` is but an object name like ```length.of.the.final.iteration.of.this.analysis``` is cumbersome to type.
+4. Object names are case sensitive. ```Df1``` is not the same as ```df1```
+5. If you must, separate words in your object names with either ```.``` or ```_```. So: ```toe.length``` or ```toe_length```. Or you can use "camel case", e.g., ```toeLength```. All are equally valid object names, the differences come down to aesthetics.
+
+### R command line expressions
+
+The basic structure of a R command is the command prompt followed by an object, the assignment operator, and some expression. Once you assign an expression or some other function or data to an object you can "call" (i.e., type out the object name) to evaluate your expression. So say we have a small dataset of big toe length and we want to store a vector that has all our observations in an object called toe.length
+
+```R
+toe.length <- c(3.5.4.3.6.7.3.3.2.5)
+```
+
+The ```c()``` is a function called concatenate. It tells R that we want each of the numbers in the parentheses to be values in our vector. We can then evaluate our object
+
+```R
+toe.length
+[1] 3.0 5.0 4.0 3.0 6.0 7.0 3.0 3.0 2.5
+```
