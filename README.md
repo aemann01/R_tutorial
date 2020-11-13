@@ -1,5 +1,7 @@
 # Beginner R Programming for Anthropologists (and other folks too!)
 
+NOTE: still under construction as readme file, see 00-scratch for full materials
+
 Allison E. Mann, last updated May 21, 2018
 
 ### What is R and why should you use it?
