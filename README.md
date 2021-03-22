@@ -1,6 +1,6 @@
 # Beginner R Programming for Anthropologists (and other folks too!)
 
-NOTE: still under construction as readme file, see 00-scratch for full materials
+NOTE: see 00-scratch for full materials
 
 Allison E. Mann, last updated March 22, 2021
 
